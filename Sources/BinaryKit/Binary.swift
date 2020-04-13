@@ -260,6 +260,21 @@ public struct Binary {
         let bytes = try readBytes(MemoryLayout<UInt64>.size)
         return UInt64(UInt(bytes: bytes))
     }
+
+    // MARK: Read — Floating point
+    
+    /// Returns a `Float` and increments the reading cursor by 4 bytes.
+    public mutating func readFloat() throws -> Float {
+        let bytes = try readBytes(MemoryLayout<Float>.size)
+        return Float(bitPattern: UInt32(UInt(bytes: bytes)))
+    }
+    
+    /// Returns a `Double` and increments the reading cursor by 8 bytes.
+    public mutating func readDouble() throws -> Double {
+        let bytes = try readBytes(MemoryLayout<Double>.size)
+        return Double(bitPattern: UInt64(UInt(bytes: bytes)))
+    }
+    
     
     
     
@@ -323,5 +338,15 @@ public struct Binary {
     /// Writes an `FixedWidthInteger` (`Int`, `UInt8`, `Int8`, `UInt16`, `Int16`, …) to `Binary`.
     public mutating func writeInt<T: FixedWidthInteger>(_ int: T) {
         bytesStore.append(contentsOf: int.bytes)
+    }
+
+    /// Writes an `Float` to `Binary`.
+    public mutating func writeFloat(_ float: Float) {
+        writeInt(float.bitPattern)
+    }
+
+    /// Writes an `Double` to `Binary`.
+    public mutating func writeDouble(_ double: Double) {
+        writeInt(double.bitPattern)
     }
 }
