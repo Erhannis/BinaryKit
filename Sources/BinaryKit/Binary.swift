@@ -348,7 +348,7 @@ public struct Binary {
     /// Writes a `String`'s `Int64` size and then the `String` to `Binary`.
     public mutating func writeLenString(_ string: String) {
         let bytes = [UInt8](string.utf8)
-	writeInt(Int64(bytes.count))
+        writeInt(Int64(bytes.count))
         writeBytes(bytes)
     }
 
