@@ -191,7 +191,17 @@ public struct Binary {
         }
         return result
     }
-    
+
+    /// Returns a `String` after first reading its Int64 length n in bytes, reading n bytes, and
+    /// increments the reading cursor by 8+n bytes.
+    public mutating func readLenString(encoding: String.Encoding = .ascii) throws -> String {
+        let quantitiy: Int64 = try readInt64()
+        guard let result = String(bytes: try self.readBytes(Int(quantitiy)), encoding: encoding) else {
+            throw BinaryError.notString
+        }
+        return result
+    }
+
     /// Returns the next byte as `Character` and
     /// increments the reading cursor by 1 byte.
     public mutating func readCharacter() throws -> Character {
@@ -334,7 +344,14 @@ public struct Binary {
         let bytes = [UInt8](string.utf8)
         writeBytes(bytes)
     }
-    
+
+    /// Writes a `String`'s `Int64` size and then the `String` to `Binary`.
+    public mutating func writeLenString(_ string: String) {
+        let bytes = [UInt8](string.utf8)
+	writeInt(Int64(bytes.count))
+        writeBytes(bytes)
+    }
+
     /// Writes an `FixedWidthInteger` (`Int`, `UInt8`, `Int8`, `UInt16`, `Int16`, …) to `Binary`.
     public mutating func writeInt<T: FixedWidthInteger>(_ int: T) {
         bytesStore.append(contentsOf: int.bytes)
