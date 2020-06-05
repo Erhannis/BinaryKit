@@ -231,19 +231,19 @@ public struct Binary {
     /// Returns an `Int16` and increments the reading cursor by 2 bytes.
     public mutating func readInt16() throws -> Int16 {
         let bytes = try readBytes(MemoryLayout<Int16>.size)
-        return Int16(bitPattern: UInt16(UInt(bytes: bytes)))
+        return Int16(bitPattern: UInt16(UInt32(bytes: bytes)))
     }
     
     /// Returns an `Int32` and increments the reading cursor by 4 bytes.
     public mutating func readInt32() throws -> Int32 {
         let bytes = try readBytes(MemoryLayout<Int32>.size)
-        return Int32(bitPattern: UInt32(UInt(bytes: bytes)))
+        return Int32(bitPattern: UInt32(bytes: bytes))
     }
     
     /// Returns an `Int64` and increments the reading cursor by 8 bytes.
     public mutating func readInt64() throws -> Int64 {
         let bytes = try readBytes(MemoryLayout<Int64>.size)
-        return Int64(bitPattern: UInt64(UInt(bytes: bytes)))
+        return Int64(bitPattern: UInt64(bytes: bytes))
     }
     
     // MARK: Read - Unsigned Integer
@@ -256,19 +256,19 @@ public struct Binary {
     /// Returns an `UInt16` and increments the reading cursor by 2 bytes.
     public mutating func readUInt16() throws -> UInt16 {
         let bytes = try readBytes(MemoryLayout<UInt16>.size)
-        return UInt16(UInt(bytes: bytes))
+        return UInt16(UInt32(bytes: bytes))
     }
     
     /// Returns an `UInt32` and increments the reading cursor by 4 bytes.
     public mutating func readUInt32() throws -> UInt32 {
         let bytes = try readBytes(MemoryLayout<UInt32>.size)
-        return UInt32(UInt(bytes: bytes))
+        return UInt32(UInt32(bytes: bytes))
     }
     
     /// Returns an `UInt64` and increments the reading cursor by 8 bytes.
     public mutating func readUInt64() throws -> UInt64 {
         let bytes = try readBytes(MemoryLayout<UInt64>.size)
-        return UInt64(UInt(bytes: bytes))
+        return UInt64(bytes: bytes)
     }
 
     // MARK: Read — Floating point
@@ -276,13 +276,13 @@ public struct Binary {
     /// Returns a `Float` and increments the reading cursor by 4 bytes.
     public mutating func readFloat() throws -> Float {
         let bytes = try readBytes(MemoryLayout<Float>.size)
-        return Float(bitPattern: UInt32(UInt(bytes: bytes)))
+        return Float(bitPattern: UInt32(bytes: bytes))
     }
     
     /// Returns a `Double` and increments the reading cursor by 8 bytes.
     public mutating func readDouble() throws -> Double {
         let bytes = try readBytes(MemoryLayout<Double>.size)
-        return Double(bitPattern: UInt64(UInt(bytes: bytes)))
+        return Double(bitPattern: UInt64(bytes: bytes))
     }
     
     
@@ -353,6 +353,7 @@ public struct Binary {
     }
 
     /// Writes an `FixedWidthInteger` (`Int`, `UInt8`, `Int8`, `UInt16`, `Int16`, …) to `Binary`.
+    //TODO I think this should not exist.  You can't read the data unless you know how many bytes were written, so this hasn't actually allowed you to ignore the size of your integer, and instead just makes it less clear what was actually written.
     public mutating func writeInt<T: FixedWidthInteger>(_ int: T) {
         bytesStore.append(contentsOf: int.bytes)
     }
